@@ -15,6 +15,11 @@ export default function MovieDetail() {
   }, [id]);
 
 
+    if (!movieData) {
+    return <p>Caricamento in corso...</p>;
+  }
+
+
 
   const { movie, reviews } = movieData;
 
@@ -24,7 +29,7 @@ export default function MovieDetail() {
       {/* Poster */}
       <div className="col-md-4">
         <img
-          src={movie.image}
+          src={movie.imageUrl}
           className="img-fluid rounded shadow"
           alt={movie.title}
         />
