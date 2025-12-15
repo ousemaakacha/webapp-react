@@ -1,16 +1,20 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import ReviewForm from "../components/ReviewForm"
 
 export default function MovieDetail() {
   const { id } = useParams();
-
   const [movieData, setMovieData] = useState(null);
+  const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
     axios
       .get(`http://localhost:3000/movies/${id}`)
-      .then(res => setMovieData(res.data))
+      .then(res => {
+        setMovieData(res.data)
+        setReviews(res.data.reviews);
+      })
       .catch(err => console.error("Errore caricamento:", err));
   }, [id]);
 
@@ -21,12 +25,16 @@ export default function MovieDetail() {
 
 
 
-  const { movie, reviews } = movieData;
+  const { movie } = movieData;
 
-  return (
+   const handleNewReview = (newReview) => {
+    setReviews([...reviews, newReview]); 
+  };
+
+   return (
     <div className="row g-4">
       
-      {/* Poster */}
+      
       <div className="col-md-4">
         <img
           src={movie.imageUrl}
@@ -35,7 +43,7 @@ export default function MovieDetail() {
         />
       </div>
 
-      {/* Info Film */}
+      
       <div className="col-md-8">
         <h1>{movie.title}</h1>
         <p className="text-muted">{movie.genre}</p>
@@ -43,13 +51,15 @@ export default function MovieDetail() {
 
         <hr />
 
-        <h4 className="mt-4">Recensioni</h4>
+        <h4 className="mt-4">REVIEWS</h4>
+
+        <ReviewForm movieId={movie.id} onReviewAdded={handleNewReview} />
 
         {reviews.length > 0 ? (
           <ul className="list-group mt-3">
             {reviews.map((rev) => (
               <li className="list-group-item" key={rev.id}>
-                <strong>{rev.author}:</strong> {rev.text}
+                <strong>{rev.name}:</strong> {rev.text}
               </li>
             ))}
           </ul>
@@ -58,5 +68,5 @@ export default function MovieDetail() {
         )}
       </div>
     </div>
-  );
+  ) ;
 }
