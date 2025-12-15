@@ -4,11 +4,12 @@ import axios from "axios";
 function ReviewForm({ movieId, onReviewAdded }) {
   const [name, setName] = useState("");
   const [text, setText] = useState("");
+  const [vote, setVote] = useState(1);
 
   const handleSubmit = (e) => {
     
 
-    const newReview = { movieId, name, text, vote: 3 };
+    const newReview = { movieId, name, text, vote };
 
     axios
       .post("http://localhost:3000/reviews", newReview)
@@ -41,6 +42,22 @@ function ReviewForm({ movieId, onReviewAdded }) {
           onChange={(e) => setText(e.target.value)}
           required
         ></textarea>
+      </div>
+      <div className="mb-3">
+        <label htmlFor="vote" className="form-label">Vote</label>
+        <select
+          id="vote"
+          className="form-select"
+          value={vote}
+          onChange={(e) => setVote(e.target.value)} 
+          required
+        >
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
       </div>
       
       <button type="submit" className="btn btn-primary">ADD REVIEW</button>
