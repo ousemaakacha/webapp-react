@@ -2,21 +2,32 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import ReviewForm from "../components/ReviewForm"
+import { useLoader } from "../context/loaderContext";
 
 export default function MovieDetail() {
   const { id } = useParams();
   const [movieData, setMovieData] = useState(null);
   const [reviews, setReviews] = useState([]);
+  const { loading, startLoading, stopLoading } = useLoader();
 
   useEffect(() => {
+
+    startLoading();
+
     axios
       .get(`http://localhost:3000/movies/${id}`)
       .then(res => {
         setMovieData(res.data)
         setReviews(res.data.reviews);
       })
-      .catch(err => console.error("Errore caricamento:", err));
-  }, [id]);
+      .catch(err => console.error("Errore caricamento:", err))
+      .finally(() => stopLoading());
+  }, [id, startLoading, stopLoading]);
+
+
+  if (loading) {
+    return <div className="loader">Caricamento...</div>;  
+  }
 
 
     if (!movieData) {
